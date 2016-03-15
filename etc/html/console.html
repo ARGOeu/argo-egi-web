@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:tpl="http://software.in2p3.fr/lavoisier/template.xsd" xmlns:cfg="http://software.in2p3.fr/lavoisier/config.xsd" tpl:extends="/resource/html/default.html">
+
+
+
+<body>
+<!-- Right side column. Contains the navbar and content of the page -->
+<div id="wrapper" class="wrapper">
+    <!-- Left side column. contains the logo and sidebar -->
+    <header class="main-header">
+
+
+
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu navbar-collapse collapse">
+
+
+                <ul class="nav navbar-nav">
+
+
+                    <!-- Control Sidebar Toggle Button -->
+                    <li class="active"><a href="/lavoisier/listViews">ARGO WEB UI</a></li>
+
+                    <li>
+                        <a data-toggle="control-sidebar" href="#">
+                            <i class="fa fa-gears"></i>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </div>
+
+        </nav>
+
+
+
+    </header>
+
+
+
+    <!-- Content Header (Page header) -->
+    <div class="content-wrapper">
+
+
+        <!-- Main content -->
+        <section class="content" id="content">
+
+            <section class="content-header" id="content-header">
+                <h1>
+                    Admin Page
+                    <small>Console page</small>
+                </h1>
+            </section>
+
+
+
+
+
+            <h3>Statuses of the views</h3>
+
+            <div id="categoriesDiv" class="row">
+            <span tpl:foreach="/views/categories/category[text()!='Hidden' and text()!='Monitoring' and text()!='Environment' and text()!='Configuration']">
+                <button class="buttonFilter btn btn-default" style="font-size: smaller;margin:7px" value="{{text()}}">
+                    {{text()}}
+                </button>
+            </span>
+                <button class="buttonFilter btn btn-primary" style="font-size: smaller;margin:7px" value="">Clear filter</button>
+                <button type="button" class="pull-right btn btn-primary" data-toggle="modal" data-target="#myHelp">
+                    <div class="glyphicon glyphicon-question-sign"></div>
+                </button>
+                <br/>
+            </div>
+
+
+            <div class="modal fade" id="myHelp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                            <h3 class="modal-title" id="myModalLabel">Colors Code</h3>
+                        </div>
+                        <div class="modal-body">
+
+
+                            <div class='callout callout-success'>OK</div>
+                            <div class='callout callout-danger'>Failure</div>
+                            <div class='callout callout-unknown'>Not built</div>
+                            <div class='callout callout-info'>Under construction</div>
+                            <div>The date is representing the date of the last successful built</div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="dataTableDiv">
+                <div class="row">
+                    <btn class="btn btn-primary" id="notifyMultiple" style="display:none;padding:15px">NOTIFY</btn>
+
+                    <table id="dataTableJs" class="display display-compact" style="padding:20px;margin:40px">
+                        <thead>
+                        <tr tpl:foreach="/views/mbean[position()=1]">
+                            <th>Notify / Debug / Form / View</th>
+                            <th class="sorting">Category</th>
+                            <th class="sorting">View</th>
+                            <th class="sorting">arguments</th>
+                            <th class="sorting">Status - Last success
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr tpl:foreach="/views/mbean[@category='No Category---' or (Info/cfg:category/text()!='Hidden' and Info/cfg:category/text()!='Monitoring' and Info/cfg:category/text()!='Environment' and Info/cfg:category/text()!='Configuration')]">
+                            <td>
+                                <input type="checkbox" tpl:if="@notifiable=1" value="{{@name}}" class="checkBoxes" />
+                                <input type="checkbox" tpl:else="" value="{{@name}}" class="checkBoxes" disabled="true"/>
+                            <span style="padding: 10px">
+                                <a href="/lavoisier/debug/{{@name}}"><span title="Debug of the view"    class="glyphicon glyphicon-wrench">  </span></a>
+                            </span>
+                            <span style="padding: 10px">
+                                <a  href="/lavoisier/form/{{@name}}"><span title="View Form"   class="glyphicon glyphicon-edit"> </span></a>
+                            </span>
+                            <span>
+                                <a tpl:if="arguments/cfg:argument[not(text()) or text()=''][not(@eval)]" ></a>
+                                <a tpl:else=""  href="/lavoisier/{{@name}}" >  <span title="Access view"   class="glyphicon glyphicon-eye-open"> </span></a>
+                            </span>
+                            </td>
+                            <td tpl:if="Info/cfg:category/text()">{{Info/cfg:category/text()}}</td>
+                            <td tpl:else="">No Category</td>
+
+                            <td>
+                                <span title="{{@name}}" data-content="{{Info/cfg:description/text()}}" rel="popover" aria-hidden="true" data-container="content-wrapper"> {{@name}}</span>
+                            </td>
+
+                            <td tpl:if="arguments/cfg:argument/text() or arguments/cfg:argument/@eval">
+                                <em><span tpl:foreach="arguments/cfg:argument" data-content="{{text()}}{{@eval}}" rel="tooltip" aria-hidden="true" data-container="content-wrapper" >{{@name}} <br/></span></em>
+                            </td>
+                            <td tpl:else="">
+                                <span tpl:foreach="arguments/cfg:argument">{{@name}} <br/></span>
+                            </td>
+
+                            <td class="callout callout-{{@statusclass}}">
+                                <a href="/lavoisier/status/jmx/domain/group/mbean[@name='{{@name}}']">{{attribute[@name='LastBuildDate']/value/text()}}</a>
+                            <span tpl:if="attribute[@name='LastException']/@strln &gt; 30" style="color:black ">
+                                <span title="{{@name}}" data-container="content-wrapper" rel="popover"
+                                      data-content="{{concat(attribute[@name='LastBuildDate']/value/text(),' -------------------',attribute[@name='LastException']/value/text())}}">
+                                </span>
+                                <span title="{{@name}}" data-content="{{attribute[@name='LastStackTrace']/value/text()}}" data-placement="left"
+                                      rel="popover"  class="pull-right glyphicon glyphicon-search"/>
+                            </span>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            </section>
+    </div>
+
+
+</div>
+
+</body>
+<script id="viewslocalscript">
+    <!--
+
+    $(document).ready(function () {
+        $('#dataTableJs').DataTable({
+            "order": [[1, "asc"]],
+            "paging": false
+        });
+
+        $('span[rel="popover"]').popover({
+            container: 'body',
+            html: true
+
+        });
+
+        $('span[rel="popover"]').css("max-width", "500px");
+
+        $(".buttonFilter").click(function () {
+            $('#dataTableJs').dataTable().fnFilter($(this).val());
+        });
+
+        $("#notifyMultiple").click(function () {
+            var url;
+            $(".checkBoxes").each(function (index) {
+                if (this.checked) {
+                    url = '/notify/' + $(this).val();
+                    window.open(url, 'Notify the view', 'menubar=no, scrollbars=no, top=100, left=100, width=300, height=200');
+                }
+            });
+        });
+
+        $(".checkBoxes").change(function () {
+            var cpt = 0;
+            $(".checkBoxes").each(function (index) {
+                if (this.checked)
+                    cpt = cpt + 1;
+            });
+            if (cpt)
+                $("#notifyMultiple").show();
+            else
+                $("#notifyMultiple").hide();
+        });
+
+        $("#views").addClass('active');
+        $("#sidebar").load("/lavoisier/sidebar?accept=html");
+    });
+
+    -->
+</script>
+
+
+</html>

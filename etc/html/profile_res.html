@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html  xmlns:e="http://software.in2p3.fr/lavoisier/entries.xsd"   xmlns:tpl="http://software.in2p3.fr/lavoisier/template.xsd" tpl:extends="/lavoisier/_default_?accept=html">
+
+
+<body>
+<!-- Right side column. Contains the navbar and content of the page -->
+<div id="wrapper">
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+
+
+        <!-- Main content -->
+        <section class="content" id="content">
+
+            <section class="content-header" id="content-header">
+                <h1>
+                    Profile
+                    <small>Management page</small>
+                </h1>
+
+            </section>
+
+
+
+
+
+            <table class="display display-compact dataTableStyle2" style="margin:80px;">
+               <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr tpl:foreach="e:entries/e:entry[@key='name']">
+                    <td>Aggregation Profile Name</td>
+                    <td><input class="col-md-5" id="name" value="{{text()}}"/></td>
+                </tr>
+                <tr tpl:foreach="e:entries/e:entry[@key='namespace']">
+                    <td>Aggregation Profile NameSpace</td>
+                    <td><input class="col-md-5" id="namespace" value="{{text()}}"/></td>
+                </tr>
+
+                <tr tpl:foreach="e:entries/e:entry[@key='MetricsProfileName']">
+                    <td>MetricsProfileName</td>
+                    <td><input class="col-md-5" id="MetricsProfileName" value="{{text()}}"/></td>
+                </tr>
+                <tr tpl:foreach="e:entries/e:entry[@key='MetricsProfileId']">
+                    <td>MetricsProfileId</td>
+                    <td><input class="col-md-5" id="MetricsProfileId" value="{{text()}}"/></td>
+                </tr>
+
+                <tr>
+                    <td>Endpoint Group</td>
+                    <td>
+                        <select id="endpoint_group">
+                            <option value="sites" selected="true">SITES</option>
+                            <option value="servicegroups">SERVICE GROUPS</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Metrics Operation</td>
+                    <td>
+                        <select id="metric_operation">
+                            <option value="AND" selected="true">AND</option>
+                            <option value="OR">OR</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+
+                    <td>Profile Operation</td>
+                    <td>
+                        <select id="profile_operation">
+                            <option value="AND" selected="true">AND</option>
+                            <option value="OR">OR</option>
+                        </select>
+                    </td>
+                </tr>
+                </tbody>
+
+                <tfoot>
+                <tr tpl:foreach="e:entries/e:entry[contains(@key,'group')]" class="groups">
+                    <td><input  class="col-md-5"  value="{{@key}}"/></td>
+                    <td><textarea  rows="4" cols="50" >{{text()}}</textarea></td>
+                </tr>
+                </tfoot>
+
+
+
+
+            </table>
+
+
+
+            <form id="jsonform" class="form" tpl:if="e:entries/e:entry[@key='profileId']" action="/lavoisier/profileUpdate?id={{/e:entries/e:entry[@key='profileId']/text()}}" method="post">
+                <input class="hidden" id="json" name="json"/>
+            </form>
+
+            <form id="jsonform" class="form" tpl:else="" action="/lavoisier/profileAddition" method="post">
+                <input class="hidden" id="json" name="json"/>
+            </form>
+
+
+
+
+
+            <span class="alert alert-success" style="margin:100px;">
+                Please check/correct the values registered and change the name of the groups .
+                The validation will trigger directly the API.
+            </span>
+
+
+
+            <input type="submit" class="btn btn-primary" value="Validate" id="creationButton"/>
+
+            <!--<textarea  id="jsonvalue"  cols="50" rows="20" style="margin:60px"></textarea>-->
+
+        </section><!-- /.content -->
+
+    </div><!-- /.right-side -->
+</div>
+
+
+
+</body>
+
+
+<script type="text/javascript" >
+
+<!--
+
+    $( document ).ready(function(){
+
+        $(".dataTableStyle2").dataTable({
+            paging: false,
+            filter: false
+        });
+
+        $("#jsonvalue").hide();
+
+
+        $("#creationButton").click(function(){
+
+            var tabGroups=[];
+
+
+            $('tr[class="groups"]').each(function( index ) {
+                var myGroupOutput=new Object();
+                myGroupOutput.name=$('td input',this).val();
+
+                myGroupOutput.operation='OR';
+
+                var services=$('td textarea',this).val();
+
+                var tabServices=services.split(",");
+                var tabServicesGroup=[];
+
+
+
+                for (var i= 0; i < tabServices.length-1 ;i++)
+                {
+                    tabServicesGroup.push({name:tabServices[i],operation:'OR'});
+
+                }
+                myGroupOutput.services=tabServicesGroup;
+                tabGroups.push(myGroupOutput);
+
+
+            });
+
+
+
+            var myJsonOutput = new Object();
+            myJsonOutput.name = $("#name").val();
+            myJsonOutput.namespace = $("#namespace").val();
+            myJsonOutput.endpoint_group =$("#endpoint_group option:selected").text();
+            myJsonOutput.metric_operation = $("#metric_operation option:selected").text();
+            myJsonOutput.profile_operation = $("#profile_operation option:selected").text();
+            myJsonOutput.metric_profile={id:$("#MetricsProfileId").val()};
+
+            myJsonOutput.groups=tabGroups;
+
+            var jsondata = JSON.stringify(myJsonOutput);
+
+
+            $("#jsonvalue").show();
+            $("#jsonvalue").empty();
+            $("#jsonvalue").text(jsondata);
+
+            $("#json").val(jsondata);
+
+           $("#jsonform").submit();
+
+        });
+
+
+
+
+
+    });
+    -->
+</script>
+
+</html>
