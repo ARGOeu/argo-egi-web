@@ -27,9 +27,6 @@
     </categories>
 
 
-
-
-
     <categories bg="bg-purple" icon="fa fa-cog" title="Administration">
 
         <category link="/profiles" icon="fa fa-group"> Profile Management</category>
@@ -55,7 +52,7 @@
 
     <release>
         <version>2.6</version>
-        <date>2017, October 24th</date>
+        <date>2017, December 5th</date>
         <repository link="https://github.com/ARGOeu" icon="fa fa-github"></repository>
     </release>
 </menu>
