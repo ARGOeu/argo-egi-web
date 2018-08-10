@@ -176,16 +176,16 @@
                     <element-create>
                         new_element('Availability',new_attribute('timestamp',/e:entries/@month2)
                         |new_attribute('availability',
-                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@monthstart][@availability_W!='N.A']/@availability_W)
+                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@month2][@availability_W!='N.A']/@availability_W)
                         div sum(../../e:entry/@ComputationPower))
                         |new_attribute('reliability',
-                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@monthstart][@reliability_W!='N.A']/@reliability_W)
+                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@month2][@reliability_W!='N.A']/@reliability_W)
                         div sum(../../e:entry/@ComputationPower))
                         |new_attribute('downtime',
-                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@monthstart][@downtime_W!='N.A']/@downtime_W)
+                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@month2][@downtime_W!='N.A']/@downtime_W)
                         div sum(../../e:entry/@ComputationPower))
                         |new_attribute('unknown',
-                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@monthstart][@unknown_W!='N.A']/@unknown_W)
+                        sum(../preceding-sibling::e:entry/Availability[@timestamp=/e:entries/@month2][@unknown_W!='N.A']/@unknown_W)
                         div sum(../../e:entry/@ComputationPower))
                         )
                     </element-create>
