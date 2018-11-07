@@ -322,7 +322,7 @@
                 <attribute-create out="report">$report</attribute-create>
 
                 <element in="group" if="@name=$ngi or $ngi='false'">
-                    <element in="group" out="Site" if="contains(concat($site,','),@name) or $ngi!='false'">
+                    <element in="group" out="Site" if="contains(concat(',',$site,','),concat(',',@name,',')) or $ngi!='false'">
                         <element in="results" out="Availability"></element>
                     </element>
                 </element>
