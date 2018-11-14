@@ -357,7 +357,7 @@ function getHeatMapChart(xmlUrl,Title,containerId)
 
         var rows_txt = temp + "" + param + "=" + paramVal;
         window.location = baseURL + "?" + newAdditionalURL + rows_txt;
-    }
+    };
 
 
 var newText = $(".output").text().replace('\n','<br/>')
