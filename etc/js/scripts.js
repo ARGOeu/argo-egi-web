@@ -339,6 +339,26 @@ function getHeatMapChart(xmlUrl,Title,containerId)
         window.location = currentLocation.split('#')[0].replace(needle,haystack);
     };
 
+    function updateURLParameter(url, param, paramVal){
+        var newAdditionalURL = "";
+        var tempArray = url.split("?");
+        var baseURL = tempArray[0];
+        var additionalURL = tempArray[1];
+        var temp = "";
+        if (additionalURL) {
+            tempArray = additionalURL.split("&");
+            for (var i=0; i<tempArray.length; i++){
+                if(tempArray[i].split('=')[0] != param){
+                    newAdditionalURL += temp + tempArray[i];
+                    temp = "&";
+                }
+            }
+        }
+
+        var rows_txt = temp + "" + param + "=" + paramVal;
+        window.location = baseURL + "?" + newAdditionalURL + rows_txt;
+    }
+
 
 var newText = $(".output").text().replace('\n','<br/>')
 $(".output").text(newText);
